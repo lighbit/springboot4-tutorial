@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc 
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/task
+        http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+	<context:component-scan base-package="com.zulkarnaen.sprinboot4" />
+
+	<!-- READ YOUR PROPERTIES -->
+	<util:properties id="scheduler" location="classpath:scheduler.properties"></util:properties>
+
+
+	<task:scheduled-tasks scheduler="myScheduler">
+		<task:scheduled ref="jobScheduler" method="printMessage" cron="#{scheduler.schedulerTime}" />
+		<task:scheduled ref="jobScheduler2" method="printMessage2" fixed-rate="5000" />
+	</task:scheduled-tasks>
+
+	<task:executor id="executor" pool-size="5" />
+	<task:scheduler id="myScheduler" pool-size="10" />
+
+	<task:annotation-driven scheduler="myScheduler" executor="executor" proxy-target-class="false" />
+
+
+</beans>
+<!-- Dalam konfigurasi di atas, kami telah menentukan ada tugas terjadwal 
+	dengan periodisitas yang berbeda. parameter delay awal menentukan jumlah 
+	milidetik untuk menunggu sebelum eksekusi pertama metode. fixed-rate menentukan 
+	jumlah milidetik di antara setiap metode yang dimulai, terlepas dari berapa 
+	lama metode yang dibutuhkan untuk menyelesaikannya. cron memberikan kontrol 
+	yang lebih baik pada eksekusi tugas. Di sini kami telah mengkonfigurasi task3 
+	untuk dijalankan setiap 5 detik tetapi hanya pada hari kerja. -->
+
+<!-- Pertama kita perlu mengkonfigurasi scheduler itu sendiri yang menjadwalkan 
+	beberapa tugas untuk dijalankan di beberapa titik di masa depan. <task: scheduler 
+	id = "myScheduler" /> Konfigurasi di atas membuat Penjadwal dengan kumpulan 
+	utas standar yang hanya memiliki satu utas. Jika Anda memiliki tugas yang 
+	perlu waktu lama untuk diselesaikan, dan sering, Anda dapat mengonfigurasi 
+	thread-pool dengan ukuran pool yang ditentukan untuk menangani setiap tugas 
+	dalam utas terpisah. <task: scheduler id = "myScheduler" pool-size = "10" 
+	/> Selanjutnya, kita mengkonfigurasi tugas yang dijadwalkan. <task: Scheduler-scheduler 
+	tugas = "myScheduler">     <task: dijadwalkan ref = "myBean" method = "printMessage" 
+	fixed-delay = "5000" /> </ tugas: tugas terjadwal> tugas: terjadwal menentukan 
+	tugas baru. Atribut ‘ref’ mengacu pada bean yang metodenya (disebut dengan 
+	atribut ‘metode’) akan dipanggil pada kondisi waktu tertentu. fixed-delay 
+	menentukan waktu dalam milidetik antara penyelesaian tugas pertama dan mulai 
+	tugas berikutnya. Di sini kita mengatakan bahwa myBean.printMessage () akan 
+	dengan penjadwal secara berkala, dengan 5 detik penundaan antara penyelesaian 
+	tugas pertama dan mulai tugas berikutnya. Periodisitas penjadwal dapat didefinisikan 
+	dengan cara lain juga. -->

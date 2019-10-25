@@ -1,19 +1,21 @@
 package com.zulkarnaen.sprinboot4;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 @Configuration
+@EnableAsync
 @ComponentScan(basePackages = "com.zulkarnaen.sprinboot4")
 @PropertySource(value = { "classpath:application.properties" }) // Classpath in src/main/resources
 public class AppConfig {
-
-	// TODO: for Spring @Profile Guide
-//	@Autowired
-//	public DataSource dataSource;
 
 	/*
 	 * PropertySourcesPlaceHolderConfigurer Bean only required for @Value("{}")
@@ -24,6 +26,21 @@ public class AppConfig {
 	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
+	
+	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+        taskRegistrar.setScheduler(taskExecutor());
+    }
+	
+	@Bean(destroyMethod="shutdown")
+    public Executor taskExecutor() {
+        return Executors.newScheduledThreadPool(5);
+    }
+	
+	/*this use for make scheduler in appconfig but there is set scheduler in JobSchedulur.java*/
+//	@Bean
+//    public JobScheduler bean() {
+//        return new JobScheduler();
+//    }
 
 }
 

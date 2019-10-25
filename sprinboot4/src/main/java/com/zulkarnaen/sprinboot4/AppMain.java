@@ -2,7 +2,6 @@ package com.zulkarnaen.sprinboot4;
 
 import java.math.BigDecimal;
 import java.util.List;
-
 import org.joda.time.LocalDate;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -44,11 +43,13 @@ public class AppMain {
 
 		contexts.close();
 
+		// TODO: GET FILE AND SHOW WITH PROPERTY
 		FileService serviceProperty = (FileService) context.getBean("fileService");
 		serviceProperty.readValues();
 
 //		context.close();
 
+		// TODO: PROFILES
 		AbstractApplicationContext contextss = new ClassPathXmlApplicationContext("dev-config-context.xml");
 		// Sets the active profiles
 		contextss.getEnvironment().setActiveProfiles("Database");
@@ -57,6 +58,7 @@ public class AppMain {
 		 */
 		contextss.close();
 
+		// TODO: INSERT DELETE SHOW DB WITH HIBERNATE
 		EmployeeService serviceHibernate = (EmployeeService) context.getBean("employeeService");
 
 		/*
@@ -76,6 +78,8 @@ public class AppMain {
 		employee2.setJoiningDate(new LocalDate(2012, 11, 11));
 		employee2.setSalary(new BigDecimal(20000));
 		employee2.setSsn("ssn00000002");
+
+		serviceHibernate.deleteEmployeeBySsn("ssn00000001");
 
 		/*
 		 * Persist both Employees
@@ -113,6 +117,15 @@ public class AppMain {
 		}
 
 		context.close();
+
+		// TODO: SCHEDULER SIMPLE
+		AbstractApplicationContext contextSheduler = new ClassPathXmlApplicationContext("sheduler.xml");
+//		AbstractApplicationContext contextSheduler = new AnnotationConfigApplicationContext(AppConfig.class);
+		System.out.println(contextSheduler);
+		
+		// TODO: SCHEDULER QUARTZ
+		AbstractApplicationContext contextQuartz = new ClassPathXmlApplicationContext("quartz-context.xml");
+		System.out.println(contextQuartz);
 	}
 
 }
