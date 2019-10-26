@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<bean id="activeMqMessaging"
+		class="com.rest.zulkarnaen.springboot4.serviceimpl.ActiveMQMessaging" />
+
+	<bean id="rsaEncryption"
+		class="com.rest.zulkarnaen.springboot4.serviceimpl.RSAEncryption" />
+
+	<bean id="communication"
+		class="com.rest.zulkarnaen.springboot4.model.Communication">
+		<constructor-arg>
+			<ref bean="rsaEncryption" />
+		</constructor-arg>
+		<property name="messaging">
+			<ref bean="activeMqMessaging" />
+		</property>
+	</bean>
+
+	<!-- 1. autowire=”byName” example -->
+	<bean id="application"
+		class="com.rest.zulkarnaen.springboot4.model.Application"
+		autowire="byName" />
+
+	<!-- Harus sama dengan class yang dipanggil. -->
+	<bean id="applicationUser"
+		class="com.rest.zulkarnaen.springboot4.model.ApplicationUser">
+		<property name="name" value="superUser" />
+		<property name="name2" value="Zulkarnaen" />
+	</bean>
+
+	<!-- 2. autowire=”byType” example -->
+	<bean id="employee"
+		class="com.rest.zulkarnaen.springboot4.model.Employee"
+		autowire="byType" />
+
+	<!-- Kata kata jelas di id -->
+	<bean id="ini di isi ngasal juga gapapa kok ga akan dibaca hehe"
+		class="com.rest.zulkarnaen.springboot4.model.EmployeeAddress">
+		<property name="street" value="112/223,SantaVila" />
+		<property name="city" value="Nebraska" />
+	</bean>
+
+	<!-- 3. autowire=”constructor” example -->
+	<bean id="performer"
+		class="com.rest.zulkarnaen.springboot4.model.Performer"
+		autowire="constructor" />
+
+	<!-- Sama seperti by type tapi bedanyaw Constructornya -->
+	<bean id="instrument"
+		class="com.rest.zulkarnaen.springboot4.model.Instrument">
+		<property name="name" value="PIANO" />
+	</bean>
+
+	<!-- 4. autowire=”no” example -->
+	<bean id="driver"
+		class="com.rest.zulkarnaen.springboot4.model.Driver" autowire="no">
+		<property name="license" ref="license" />
+	</bean>
+
+	<bean id="license"
+		class="com.rest.zulkarnaen.springboot4.model.License">
+		<property name="number" value="123456ABCD" />
+	</bean>
+
+</beans>
